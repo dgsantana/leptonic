@@ -3,9 +3,9 @@ use leptonic::prelude::*;
 use leptos::*;
 
 #[component]
-pub fn PageAlert(cx: Scope) -> impl IntoView {
-    let (centered, set_centered) = create_signal(cx, false);
-    view! { cx,
+pub fn PageAlert() -> impl IntoView {
+    let (centered, set_centered) = create_signal(false);
+    view! {
         <H1>"Alerts"</H1>
 
         <Code>
@@ -14,10 +14,10 @@ pub fn PageAlert(cx: Scope) -> impl IntoView {
             "#)}
         </Code>
 
-        <Alert variant=AlertVariant::Success title=|_| "Success" centered=centered>"Action completed."</Alert>
-        <Alert variant=AlertVariant::Info title=|_| "Info" centered=centered>"This concept is based on [...]"</Alert>
-        <Alert variant=AlertVariant::Warn title=|_| "Warn" centered=centered>"This seems not plausible."</Alert>
-        <Alert variant=AlertVariant::Danger title=|_| "Danger" centered=centered>"There was an error!"</Alert>
+        <Alert variant=AlertVariant::Success title=|| "Success" centered=centered>"Action completed."</Alert>
+        <Alert variant=AlertVariant::Info title=|| "Info" centered=centered>"This concept is based on [...]"</Alert>
+        <Alert variant=AlertVariant::Warn title=|| "Warn" centered=centered>"This seems not plausible."</Alert>
+        <Alert variant=AlertVariant::Danger title=|| "Danger" centered=centered>"There was an error!"</Alert>
 
         <P>"Alerts can be dynamically centered using a signal."</P>
 

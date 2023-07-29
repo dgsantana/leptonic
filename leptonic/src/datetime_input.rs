@@ -13,7 +13,6 @@ use crate::{
 
 #[component]
 pub fn DateTimeInput<S>(
-    cx: Scope,
     #[prop(optional, into)] label: OptionalMaybeSignal<String>,
     #[prop(into)] get: MaybeSignal<Option<time::OffsetDateTime>>,
     set: S,
@@ -41,8 +40,8 @@ where
 
     let style = margin.map(|it| format!("--margin: {it}"));
 
-    let (open, set_open) = create_signal(cx, false);
-    let (in_focus, set_in_focus) = create_signal(cx, false);
+    let (open, set_open) = create_signal(false);
+    let (in_focus, set_in_focus) = create_signal(false);
 
     let on_key_down = move |event: KeyboardEvent| {
         let in_focus = in_focus.get();
@@ -78,20 +77,17 @@ where
     };
 
     let date_selector = move || {
-        DateSelector(
-            cx,
-            DateSelectorProps {
-                value: get.get().unwrap(),
-                on_change,
-                min,
-                max,
-                guide_mode: guide_mode.into(),
-            },
-        )
+        DateSelector(DateSelectorProps {
+            value: get.get().unwrap(),
+            on_change,
+            min,
+            max,
+            guide_mode: guide_mode.into(),
+        })
     };
 
     let time_selector = move || {
-        view! {cx,
+        view! {
             "TODO: Implement the time selector!"
             // <CrudOffsetDatetimeTimeSelector
             //     value={this.value.clone().unwrap_or_else(|| time::OffsetDateTime::now_utc())}
@@ -99,15 +95,15 @@ where
         }
     };
 
-    view! { cx,
+    view! {
         <leptonic-input-field style=style>
             {match prepend.0 {
-                Some(view) => view! { cx,
+                Some(view) => view! {
                     <div>
                         { view.get() }
                     </div>
-                }.into_view(cx),
-                None => ().into_view(cx),
+                }.into_view(),
+                None => ().into_view(),
             }}
             <input
                 id=id
@@ -127,23 +123,23 @@ where
             />
             <div class="datetime-dropdown-menu-ref">
                 { match open.get() {
-                    true => view! {cx,
+                    true => view! {
                         <div class="datetime-dropdown-menu">
                             {
                                 match input_type {
-                                    Type::Date => date_selector().into_view(cx),
-                                    Type::Time => time_selector().into_view(cx),
-                                    Type::DateTime => view! {cx,
+                                    Type::Date => date_selector().into_view(),
+                                    Type::Time => time_selector().into_view(),
+                                    Type::DateTime => view! {
                                         <>
                                             {date_selector()}
                                             {time_selector()}
                                         </>
-                                    }.into_view(cx),
+                                    }.into_view(),
                                 }
                             }
                         </div>
-                    }.into_view(cx),
-                    false => ().into_view(cx)
+                    }.into_view(),
+                    false => ().into_view()
                 } }
             </div>
         </leptonic-input-field>

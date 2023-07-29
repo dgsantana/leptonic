@@ -18,7 +18,6 @@ pub struct TabLabel {
 // TODO: We might want to take only `Children` and hide them when the tab is not active...
 #[component]
 pub fn Tab<L>(
-    cx: Scope,
     // TODO: Can / should we accept a String instead?
     #[prop(optional)] id: Option<Uuid>,
     /// Uniquely identifies this tab.
@@ -34,17 +33,17 @@ where
     L: IntoView + 'static,
 {
     let id = id.unwrap_or_else(Uuid::new_v4);
-    let tabs = use_context::<TabsContext>(cx).unwrap();
+    let tabs = use_context::<TabsContext>().unwrap();
 
     let mount = mount.or(tabs.mount).unwrap_or(Mount::Once);
 
-    let name = store_value(cx, name);
+    let name = store_value(name);
 
     tabs.set_tab_labels.update(|labels| {
         labels.push(TabLabel {
             id,
             name: name.get_value(),
-            label: Arc::new(label.into_view(cx)),
+            label: Arc::new(label.into_view()),
         })
     });
 
@@ -55,7 +54,7 @@ where
     }
 
     if let Some(on_show) = on_show {
-        create_effect(cx, move |_| {
+        create_effect(move |_| {
             let history = tabs.history.get();
             let this = name.get_value();
             if history.get_active() == Some(&this) && history.get_previous() != Some(&this) {
@@ -65,7 +64,7 @@ where
     }
 
     if let Some(on_hide) = on_hide {
-        create_effect(cx, move |_| {
+        create_effect(move |_| {
             let history = tabs.history.get();
             let this = name.get_value();
             if history.get_active() != Some(&this) && history.get_previous() == Some(&this) {
@@ -77,36 +76,36 @@ where
     let is_active = move || tabs.history.get().get_active() == Some(&name.get_value());
 
     match mount {
-        Mount::Once => view! { cx,
+        Mount::Once => view! {
             {
-                view! { cx,
+                view! {
                     <leptonic-tab id=id.to_string() data-name=name.get_value() role="tabpanel" aria-hidden=move || if is_active() { "false" } else { "true"} >
                         {
                             if let Some(children) = &children {
-                                children(cx)
+                                children()
                             } else {
                                 Fragment::new(vec![])
                             }
                         }
                     </leptonic-tab>
-                }.into_view(cx)
+                }.into_view()
             }
         },
-        Mount::WhenShown => view! { cx,
+        Mount::WhenShown => view! {
             {
-                view! { cx,
-                    <Show when=is_active fallback=|_| ()>
+                view! {
+                    <Show when=is_active fallback=|| ()>
                         <leptonic-tab id=id.to_string() data:name=name.get_value() role="tabpanel">
                             {
                                 if let Some(children) = &children {
-                                    children(cx)
+                                    children()
                                 } else {
                                     Fragment::new(vec![])
                                 }
                             }
                         </leptonic-tab>
                     </Show>
-                }.into_view(cx)
+                }.into_view()
             }
         },
     }

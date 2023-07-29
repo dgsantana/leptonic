@@ -242,14 +242,12 @@ pub enum Mount {
 }
 
 pub fn create_signal_ls<T: Clone + serde::Serialize + serde::de::DeserializeOwned>(
-    cx: Scope,
     key: &'static str,
     initial: T,
 ) -> (ReadSignal<T>, WriteSignal<T>) {
-    let (signal, set_signal) =
-        create_signal(cx, read_from_local_storage::<T>(key).unwrap_or(initial));
+    let (signal, set_signal) = create_signal(read_from_local_storage::<T>(key).unwrap_or(initial));
 
-    track_in_local_storage(cx, key, signal);
+    track_in_local_storage(key, signal);
 
     (signal, set_signal)
 }
@@ -270,11 +268,10 @@ pub fn read_from_local_storage<T: serde::de::DeserializeOwned>(key: &'static str
 }
 
 pub fn track_in_local_storage<T: serde::Serialize + Clone>(
-    cx: Scope,
     key: &'static str,
     signal: ReadSignal<T>,
 ) {
-    create_effect(cx, move |_old| {
+    create_effect(move |_old| {
         let storage = window().local_storage().ok()??;
         storage
             .set(key, serde_json::to_string(&signal.get()).ok()?.as_ref())

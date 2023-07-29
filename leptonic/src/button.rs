@@ -3,9 +3,10 @@ use std::{
     fmt::{Display, Formatter},
 };
 
-use leptos::{ev::MouseEvent, *};
+use leptos::*;
 use leptos_icons::BsIcon;
 use leptos_use::on_click_outside;
+use web_sys::MouseEvent;
 
 use crate::{icon::Icon, OptionalMaybeSignal};
 
@@ -89,7 +90,6 @@ impl Display for ButtonSize {
 
 #[component]
 pub fn Button<F>(
-    cx: Scope,
     on_click: F,
     #[prop(into, optional)] variant: OptionalMaybeSignal<ButtonVariant>,
     #[prop(into, optional)] color: OptionalMaybeSignal<ButtonColor>,
@@ -110,13 +110,13 @@ where
     let variations = move || {
         if has_variations {
             let (dropdown_open, set_dropdown_open): (ReadSignal<bool>, WriteSignal<bool>) =
-                create_signal(cx, false);
-            let dropdown_trigger = create_node_ref::<html::Div>(cx);
-            let _ = on_click_outside(cx, dropdown_trigger, move |_| {
+                create_signal(false);
+            let dropdown_trigger = create_node_ref::<html::Div>();
+            let _ = on_click_outside(dropdown_trigger, move |_| {
                 set_dropdown_open.set(false);
             });
             Some(
-                view! {cx,
+                view! {
                     <div class="dropdown-trigger" node_ref=dropdown_trigger on:click=move |_| {
                         if !disabled.get_untracked() {
                             set_dropdown_open.update(|it| *it = !*it);
@@ -127,7 +127,7 @@ where
                                 true => BsIcon::BsCaretUp,
                                 false => BsIcon::BsCaretDown,
                             };
-                            view! {cx,
+                            view! {
                                 <Icon icon=icon/>
                             }
                         }}
@@ -137,14 +137,14 @@ where
                         { variations.get() }
                     </div>
                 }
-                .into_view(cx),
+                .into_view(),
             )
         } else {
             None
         }
     };
 
-    view! { cx,
+    view! {
         <button
             id=id
             class=move || class.0.as_ref().map(|it| Cow::Owned(format!("{} leptonic-btn", it.get()))).unwrap_or(Cow::Borrowed("leptonic-btn"))
@@ -162,7 +162,7 @@ where
             }
         >
             <div class="name">
-                { children(cx) }
+                { children() }
             </div>
 
             { variations }
@@ -171,19 +171,19 @@ where
 }
 
 #[component]
-pub fn ButtonGroup(cx: Scope, children: Children) -> impl IntoView {
-    view! { cx,
+pub fn ButtonGroup(children: Children) -> impl IntoView {
+    view! {
         <leptonic-btn-group>
-            { children(cx) }
+            { children() }
         </leptonic-btn-group>
     }
 }
 
 #[component]
-pub fn ButtonWrapper(cx: Scope, children: Children) -> impl IntoView {
-    view! { cx,
+pub fn ButtonWrapper(children: Children) -> impl IntoView {
+    view! {
         <leptonic-btn-wrapper>
-            { children(cx) }
+            { children() }
         </leptonic-btn-wrapper>
     }
 }

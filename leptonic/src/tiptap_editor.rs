@@ -7,7 +7,6 @@ use crate::prelude::*;
 
 #[component]
 pub fn TiptapEditor<C>(
-    cx: Scope,
     #[prop(into, optional)] id: Option<AttributeValue>,
     #[prop(into, optional)] class: Option<AttributeValue>,
     #[prop(into, optional)] disabled: OptionalMaybeSignal<bool>,
@@ -17,18 +16,18 @@ pub fn TiptapEditor<C>(
 where
     C: Fn(TiptapContent) + 'static,
 {
-    let (msg, set_msg) = create_signal(cx, TiptapInstanceMsg::Noop);
+    let (msg, set_msg) = create_signal(TiptapInstanceMsg::Noop);
 
-    let (selection_state, set_selection_state) = create_signal(cx, TiptapSelectionState::default());
+    let (selection_state, set_selection_state) = create_signal(TiptapSelectionState::default());
 
     let instance_id = Uuid::new_v4();
 
-    view! { cx,
+    view! {
         <leptonic-tiptap-editor id=id class=class>
             { move || match disabled.get() {
-                false => view! {cx,
+                false => view! {
                     <leptonic-tiptap-menu>
-                        { move || selection_state.with(|state| view! {cx,
+                        { move || selection_state.with(|state| view! {
                             <Button class=MaybeSignal::from(format!("leptonic-tiptap-btn {}", if state.h1 { "active" } else { "" })) size=ButtonSize::Small on_click=move |_| set_msg.set(TiptapInstanceMsg::H1)>
                                 "H1"
                             </Button>
@@ -104,8 +103,8 @@ where
                             </Button>
                         }) }
                     </leptonic-tiptap-menu>
-                }.into_view(cx),
-                true => ().into_view(cx),
+                }.into_view(),
+                true => ().into_view(),
             } }
             <TiptapInstance
                 id=instance_id.to_string()

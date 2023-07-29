@@ -3,17 +3,17 @@ use leptonic::prelude::*;
 use leptos::*;
 
 #[component]
-pub fn PageProgress(cx: Scope) -> impl IntoView {
-    let (progress, set_progress) = create_signal(cx, Some(34.0));
+pub fn PageProgress() -> impl IntoView {
+    let (progress, set_progress) = create_signal(Some(34.0));
 
-    let progress_str = Signal::derive(cx, move || {
+    let progress_str = Signal::derive(move || {
         progress
             .get()
             .map(|it| it.to_string())
             .unwrap_or_else(|| "0.0".to_owned())
     });
 
-    view! { cx,
+    view! {
         <H1>"Progress"</H1>
 
         <P>
@@ -22,9 +22,9 @@ pub fn PageProgress(cx: Scope) -> impl IntoView {
 
         <Code>
             {indoc!(r#"
-                let (progress, set_progress) = create_signal(cx, Some(34.0));
+                let (progress, set_progress) = create_signal(Some(34.0));
 
-                view! {cx,
+                view! {
                     <ProgressBar progress=progress/>
                 }
             "#)}
@@ -35,7 +35,7 @@ pub fn PageProgress(cx: Scope) -> impl IntoView {
         <Input ty=InputType::Number get=progress_str set=move |v| set_progress.set(str::parse::<f64>(v.as_str()).ok()) style="margin-top: 1em;"/>
 
         <Slider
-            value=Signal::derive(cx, move || progress.get().unwrap_or(0.0))
+            value=Signal::derive(move || progress.get().unwrap_or(0.0))
             set_value=move |v| set_progress.set(Some((v * 100.0).round() / 100.0))
             min=0.0
             max=100.0
@@ -53,11 +53,11 @@ pub fn PageProgress(cx: Scope) -> impl IntoView {
 
         <Code>
             {indoc!(r#"
-                <ProgressBar progress=create_signal(cx, None).0 />
+                <ProgressBar progress=create_signal(None).0 />
             "#)}
         </Code>
 
-        <ProgressBar progress=create_signal(cx, None).0 />
+        <ProgressBar progress=create_signal(None).0 />
 
         <H2>"Styling"</H2>
 

@@ -18,10 +18,9 @@ pub enum InputType {
 fn prepare_autofocus<
     T: ElementDescriptor + Clone + Deref<Target = web_sys::HtmlInputElement> + 'static,
 >(
-    cx: Scope,
     node_ref: NodeRef<T>,
 ) {
-    node_ref.on_load(cx, move |elem| {
+    node_ref.on_load(move |elem| {
         let outcome = elem.focus();
         if let Err(err) = outcome {
             tracing::error!(?err, "Could not update autofocus.");
@@ -30,11 +29,10 @@ fn prepare_autofocus<
 }
 
 fn use_focus<T: ElementDescriptor + Clone + Deref<Target = web_sys::HtmlInputElement> + 'static>(
-    cx: Scope,
     focus: Signal<bool>,
     node_ref: NodeRef<T>,
 ) {
-    create_effect(cx, move |_prev| {
+    create_effect(move |_prev| {
         let focus = focus.get();
         let elem = node_ref.get();
         if let Some(elem) = elem {
@@ -51,7 +49,6 @@ fn use_focus<T: ElementDescriptor + Clone + Deref<Target = web_sys::HtmlInputEle
 
 #[component]
 pub fn Input<S>(
-    cx: Scope,
     #[prop(optional, default=InputType::Text)] ty: InputType,
     #[prop(optional, into)] label: OptionalMaybeSignal<String>,
     #[prop(into)] get: MaybeSignal<String>,
@@ -74,19 +71,19 @@ where
         InputType::Number => "number",
     };
 
-    let node_ref: NodeRef<leptos::html::Input> = create_node_ref(cx);
+    let node_ref: NodeRef<leptos::html::Input> = create_node_ref();
 
     if autofocus {
-        prepare_autofocus(cx, node_ref);
+        prepare_autofocus(node_ref);
     }
 
     if let Some(focus) = should_be_focused {
-        use_focus(cx, focus, node_ref);
+        use_focus(focus, node_ref);
     }
 
     let set_clone = set.clone();
 
-    view! { cx,
+    view! {
         <leptonic-input style=style>
             <input
                 node_ref=node_ref
@@ -106,12 +103,12 @@ where
             />
 
             {match prepend.0 {
-                Some(view) => view! { cx,
+                Some(view) => view! {
                     <div>
                         { view.get() }
                     </div>
-                }.into_view(cx),
-                None => ().into_view(cx),
+                }.into_view(),
+                None => ().into_view(),
             }}
 
             //<LeptosIcon icon=icon />

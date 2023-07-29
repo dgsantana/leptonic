@@ -2,8 +2,8 @@ use leptonic::prelude::*;
 use leptos::*;
 
 #[component]
-pub fn PageChangelog(cx: Scope) -> impl IntoView {
-    view! { cx,
+pub fn PageChangelog() -> impl IntoView {
+    view! { 
         <H1>"Changelog"</H1>
 
         <H2>"0.1.0"</H2>

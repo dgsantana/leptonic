@@ -42,30 +42,28 @@ pub struct ThemeContext<T: Theme + 'static> {
 
 #[component]
 pub fn ThemeProvider<T>(
-    cx: Scope,
     #[prop(into, optional)] theme: Option<(ReadSignal<T>, WriteSignal<T>)>,
     children: Children,
 ) -> impl IntoView
 where
     T: Theme + 'static,
 {
-    let (theme, set_theme) = theme.unwrap_or_else(|| create_signal(cx, T::default()));
+    let (theme, set_theme) = theme.unwrap_or_else(|| create_signal(T::default()));
 
-    provide_context(cx, ThemeContext { theme, set_theme });
+    provide_context(ThemeContext { theme, set_theme });
 
-    view! {cx,
+    view! {
         <leptonic-theme-provider
             theme=move || theme.get().name()
             style="height: 100%; width: auto; display: contents;"
         >
-            { children(cx) }
+            { children() }
         </leptonic-theme-provider>
     }
 }
 
 #[component]
 pub fn ThemeToggle<T>(
-    cx: Scope,
     off: T,
     on: T,
     #[prop(optional)] variant: ToggleVariant,
@@ -75,34 +73,31 @@ pub fn ThemeToggle<T>(
 where
     T: Theme + 'static,
 {
-    let theme_context = use_context::<ThemeContext<T>>(cx)
+    let theme_context = use_context::<ThemeContext<T>>()
         .expect("<ThemeToggle/> component should be nested within a <ThemeProvider/>.");
 
-    let toggle = Toggle(
-        cx,
-        ToggleProps {
-            state: MaybeSignal::derive(cx, move || theme_context.theme.get() == on),
-            on_toggle: move |val| {
-                theme_context.set_theme.update(|current| match val {
-                    true => *current = on,
-                    false => *current = off,
-                })
-            },
-            active: OptionalMaybeSignal(None),
-            disabled: OptionalMaybeSignal(None),
-            id: None,
-            class: None,
-            style: None,
-            size: ToggleSize::default(),
-            variant,
-            icons: Some(ToggleIcons {
-                on: on.icon(),
-                off: off.icon(),
-            }),
+    let toggle = Toggle(ToggleProps {
+        state: MaybeSignal::derive(move || theme_context.theme.get() == on),
+        on_toggle: move |val| {
+            theme_context.set_theme.update(|current| match val {
+                true => *current = on,
+                false => *current = off,
+            })
         },
-    );
+        active: OptionalMaybeSignal(None),
+        disabled: OptionalMaybeSignal(None),
+        id: None,
+        class: None,
+        style: None,
+        size: ToggleSize::default(),
+        variant,
+        icons: Some(ToggleIcons {
+            on: on.icon(),
+            off: off.icon(),
+        }),
+    });
 
-    view! {cx,
+    view! {
         <leptonic-theme-toggle class=class style=style>
             { toggle }
         </leptonic-theme-toggle>

@@ -55,7 +55,6 @@ impl ToggleVariant {
 
 #[component]
 pub fn Toggle<S>(
-    cx: Scope,
     #[prop(into)] state: MaybeSignal<bool>,
     on_toggle: S,
     #[prop(into, optional)] active: OptionalMaybeSignal<bool>,
@@ -70,7 +69,7 @@ pub fn Toggle<S>(
 where
     S: Fn(bool) + 'static,
 {
-    view! { cx,
+    view! {
         <leptonic-toggle-wrapper class=class style=style>
             <leptonic-toggle
                 id=id
@@ -85,9 +84,9 @@ where
                         move || icons.as_ref().map(|icons| {
                             let off_icon = icons.off;
                             let on_icon = icons.on;
-                            view! { cx,
+                            view! {
                                 <span class="icon-positioner">
-                                    <Show when=move || state.get() fallback=move |cx| view! {cx, <Icon icon=off_icon/> }>
+                                    <Show when=move || state.get() fallback=move || view! {<Icon icon=off_icon/> }>
                                         <Icon icon=on_icon/>
                                     </Show>
                                 </span>

@@ -3,20 +3,20 @@ use leptonic::prelude::*;
 use leptos::*;
 
 #[component]
-pub fn PageInput(cx: Scope) -> impl IntoView {
-    let (text, set_text) = create_signal(cx, "text".to_owned());
-    let (password, set_password) = create_signal(cx, "secret".to_owned());
-    let (number, set_number) = create_signal(cx, "number".to_owned());
-    let (label_input, set_label_input) = create_signal(cx, "".to_owned());
+pub fn PageInput() -> impl IntoView {
+    let (text, set_text) = create_signal("text".to_owned());
+    let (password, set_password) = create_signal("secret".to_owned());
+    let (number, set_number) = create_signal("number".to_owned());
+    let (label_input, set_label_input) = create_signal("".to_owned());
 
-    view! { cx,
+    view! { 
         <H1>"Inputs"</H1>
 
         <P>"Creating an input is as simple as doing the following"</P>
         <Code>
             {indoc!(r#"
-                let (text, set_text) = create_signal(cx, "text".to_owned());
-                view! { cx,
+                let (text, set_text) = create_signal("text".to_owned());
+                view! { 
                     <Input get=text set=set_text/>
                 }
             "#)}
@@ -30,8 +30,8 @@ pub fn PageInput(cx: Scope) -> impl IntoView {
 
         <Code>
             {indoc!(r#"
-                let (password, set_password) = create_signal(cx, "secret".to_owned());
-                view! { cx,
+                let (password, set_password) = create_signal("secret".to_owned());
+                view! { 
                     <Input ty=InputType::Password get=text set=set_text/>
                 }
             "#)}
@@ -47,8 +47,8 @@ pub fn PageInput(cx: Scope) -> impl IntoView {
 
         <Code>
             {indoc!(r#"
-                let (text, set_text) = create_signal(cx, "".to_owned());
-                view! { cx,
+                let (text, set_text) = create_signal("".to_owned());
+                view! { 
                     <Input get=text set=set_text label="This is my label"/>
                     <Button
                         variant=ButtonVariant::Flat

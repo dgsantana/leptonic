@@ -4,8 +4,8 @@ use leptos::*;
 use time::OffsetDateTime;
 
 #[component]
-pub fn PageDateTime(cx: Scope) -> impl IntoView {
-    view! { cx,
+pub fn PageDateTime() -> impl IntoView {
+    view! { 
         <H1>"Date & Time"</H1>
 
         <P>"Select dates using the calendar-like "<Code inline=true>"<DateSelector>"</Code>" component."</P>
