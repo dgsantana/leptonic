@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, ops::Deref};
 
 use leptos::*;
 
@@ -226,8 +226,34 @@ pub mod prelude {
     pub use super::OptionDeref;
     pub use super::OptionalMaybeSignal;
     pub use super::OptionalSignal;
+    pub use super::Prop;
     pub use super::Size;
     pub use super::Width;
+}
+
+// TODO: Finish implementation; Test usage
+pub struct Prop<T>(T);
+
+impl<T> Deref for Prop<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T: Clone> Clone for Prop<T> {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
+}
+
+impl<T: Copy> Copy for Prop<T> {}
+
+impl<T> From<T> for Prop<T> {
+    fn from(value: T) -> Self {
+        Self(value)
+    }
 }
 
 #[derive(Default, Debug, PartialEq, Eq, Clone, Copy)]
