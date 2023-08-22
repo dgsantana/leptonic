@@ -16,7 +16,7 @@ keywords = ["leptos", "components", "component-library"]
 [dependencies]
 indexmap = "2.0"
 js-sys = "0.3"
-leptos = { git = "https://github.com/leptos-rs/leptos", branch = "effect-cleanups" }
+leptos = { git = "https://github.com/leptos-rs/leptos" }
 leptos-tiptap = { git = "https://github.com/dgsantana/leptos-tiptap.git", branch = "leptos_v0.5" }
 leptos-use = { git = "https://github.com/dgsantana/leptos-use.git", branch = "leptos_v0.5", features = ["math"] }
 leptos_icons = { git = "https://github.com/dgsantana/leptos-icons.git", branch = "leptos_v0.5", features = [
